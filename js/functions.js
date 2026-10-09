@@ -1,20 +1,18 @@
 // Функция для проверки длины строки
-function checkStringLength(string, maxLength) {
-  return string.length <= maxLength;
-}
+const checkStringLength = (string, maxLength) => string.length <= maxLength;
 
 // Функция для проверки, является ли строка палиндромом
-function isPalindrome(string) {
+const isPalindrome = (string) => {
   const normalizedString = string.replaceAll(' ','').toLowerCase();
   let reversedString = '';
   for (let i = normalizedString.length - 1; i >= 0 ; i--) {
     reversedString += normalizedString[i];
   }
   return reversedString === normalizedString;
-}
+};
 
 // Функция, которая извлекает цифру из строки
-function extractNumber(inputValue) {
+const extractNumber = (inputValue) => {
   const string = inputValue.toString();
   let resultString = '';
   for (let i = 0; i < string.length; i++) {
@@ -28,8 +26,25 @@ function extractNumber(inputValue) {
     return NaN;
   }
   return parseInt(resultString, 10);
-}
+};
+
+// Функция, которая конвертирует время формата 'HH:MM' в минуты
+const convertHoursToMinutes = (time) => {
+  const [hours, minutes] = time.split(':');
+  return parseInt(hours, 10) * 60 + parseInt(minutes, 10);
+
+};
+
+// Функция, которая проверят время встречи
+const checkMeetingTime = (workStart, workEnd, meetingStart, durationMeeting) => {
+  const startWork = convertHoursToMinutes(workStart);
+  const endWork = convertHoursToMinutes(workEnd);
+  const startMeeting = convertHoursToMinutes(meetingStart);
+  const endMeeting = startMeeting + durationMeeting;
+  return startMeeting >= startWork && endMeeting <= endWork;
+};
 
 checkStringLength('проверяемая строка', 20); // true
 isPalindrome('топот'); // true
 extractNumber(2023); // 2023
+checkMeetingTime('08:00', '17:30', '14:00', 90); // true
