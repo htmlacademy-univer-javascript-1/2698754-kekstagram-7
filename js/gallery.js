@@ -1,4 +1,4 @@
-const pictureTemplate = document.querySelector('#picture').content.querySelector('picture');
+const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 const picturesContainer = document.querySelector('.pictures');
 const listFragment = document.createDocumentFragment();
 

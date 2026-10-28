@@ -1,4 +1,4 @@
 import { createPhotos } from './data.js';
 import { renderPhotos } from './gallery.js';
-createPhotos();
-renderPhotos();
+const photos = createPhotos();
+renderPhotos(photos);
