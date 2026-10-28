@@ -1,3 +1,4 @@
 import { createPhotos } from './data.js';
-
-createPhotos();
+import { renderPhotos } from './gallery.js';
+const photos = createPhotos();
+renderPhotos(photos);
