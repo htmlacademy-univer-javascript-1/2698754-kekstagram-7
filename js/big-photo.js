@@ -1,5 +1,7 @@
 import { isEscapeKey } from './util.js';
 
+const COMMENTS_STEP = 5;
+
 const bigPhotoElement = document.querySelector('.big-picture');
 const bigPhotoImgElement = bigPhotoElement.querySelector('.big-picture__img img');
 const bigPhotoCloseElement = bigPhotoElement.querySelector('.big-picture__cancel');
@@ -8,7 +10,9 @@ const socialCommentsElement = bigPhotoElement.querySelector('.social__comments')
 const socialCommentCountElement = bigPhotoElement.querySelector('.social__comment-count');
 const likesCountElement = bigPhotoElement.querySelector('.likes-count');
 const commentsLoaderElement = bigPhotoElement.querySelector('.comments-loader');
-const commentsCountElement = bigPhotoElement.querySelector('.comments-count');
+
+let currentComments = [];
+let commentsShown = 0;
 
 const createComment = ({ avatar, name, message }) => {
   const avatarElement = document.createElement('img');
@@ -29,14 +33,28 @@ const createComment = ({ avatar, name, message }) => {
   return commentElement;
 };
 
-const renderComments = (comments) => {
-  socialCommentsElement.innerHTML = '';
-  const fragment = document.createDocumentFragment();
+const renderComments = () => {
+  commentsShown += COMMENTS_STEP;
 
-  comments.forEach((comment) => {
-    fragment.append(createComment(comment));
-  });
+  if (commentsShown >= currentComments.length) {
+    commentsLoaderElement.classList.add('hidden');
+    commentsShown = currentComments.length;
+  } else {
+    commentsLoaderElement.classList.remove('hidden');
+  }
+
+  const fragment = document.createDocumentFragment();
+  for (let i = 0; i < commentsShown; i++) {
+    fragment.append(createComment(currentComments[i]));
+  }
+
+  socialCommentsElement.innerHTML = '';
   socialCommentsElement.append(fragment);
+  socialCommentCountElement.innerHTML = `${commentsShown} из <span class="comments-count">${currentComments.length}</span> комментариев`;
+};
+
+const onCommentsLoaderClick = () => {
+  renderComments();
 };
 
 const onDocumentKeydown = (evt) => {
@@ -53,20 +71,22 @@ function closeBigPhoto () {
 }
 
 bigPhotoCloseElement.addEventListener('click', closeBigPhoto);
+commentsLoaderElement.addEventListener('click', onCommentsLoaderClick);
 
 const openBigPhoto = (data) => {
   bigPhotoElement.classList.remove('hidden');
   document.body.classList.add('modal-open');
-  socialCommentCountElement.classList.add('hidden');
-  commentsLoaderElement.classList.add('hidden');
+  socialCommentCountElement.classList.remove('hidden');
   document.addEventListener('keydown', onDocumentKeydown);
 
-  commentsCountElement.textContent = data.comments.length;
   socialCaptionElement.textContent = data.description;
   bigPhotoImgElement.src = data.url;
   bigPhotoImgElement.alt = data.description;
   likesCountElement.textContent = data.likes;
-  renderComments(data.comments);
+
+  currentComments = data.comments;
+  commentsShown = 0;
+  renderComments();
 };
 
-export {openBigPhoto};
+export { openBigPhoto };
